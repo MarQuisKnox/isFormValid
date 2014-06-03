@@ -1,4 +1,4 @@
 isFormValid
 ===========
 
-Javascript Form Validation
+Custom Form Validation using jQuery
