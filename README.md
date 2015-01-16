@@ -5,7 +5,7 @@ Custom Form Validation using jQuery
 
 # Prerequisites
 
-jQuery
+1. jQuery
 
 # Usage
 
