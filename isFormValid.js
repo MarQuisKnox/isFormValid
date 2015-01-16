@@ -7,7 +7,7 @@
  * @link        http://marquisknox.com
  * @license     Affero Public License v3
  *
- * @since		Wednesday, September 30, 2013, 12:55 PM GMT+1
+ * @since	Wednesday, September 30, 2013, 12:55 PM GMT+1
  * @modified    $Date: 2014-05-04 16:36:58 -0700 (Sun, 04 May 2014) $ $Author: opensource@marquisknox.com $
  * @version     $Id: custom.validation.js 40 2014-05-04 23:36:58Z opensource@marquisknox.com $
  *
