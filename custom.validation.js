@@ -3,11 +3,11 @@
  * Custom Form Validation
  *
  * @author      MarQuis Knox <opensouce@marquisknox.com>
- * @copyright   2013 MarQuis Knox
+ * @copyright   2013 - 2015 MarQuis Knox
  * @link        http://marquisknox.com
  * @license     Affero Public License v3
  *
- * @since	Wednesday, September 30, 2013, 12:55 PM GMT+1
+ * @since		Wednesday, September 30, 2013, 12:55 PM GMT+1
  * @modified    $Date: 2014-05-04 16:36:58 -0700 (Sun, 04 May 2014) $ $Author: opensource@marquisknox.com $
  * @version     $Id: custom.validation.js 40 2014-05-04 23:36:58Z opensource@marquisknox.com $
  *
@@ -15,13 +15,19 @@
  * @package     isFormValid
 */
 
-function formIsValid( formId )
+/**
+ * Determine if a form is valid
+ * 
+ * @param	string	formId
+ * @return	boolean
+*/
+function isFormValid( formId )
 {
 	var errors		= new Array();	
-	var required	= $('#' + formId).find('input[data-required="1"], textarea[data-required="1"], select[data-required="1"]');
-	var dupes		= $('#' + formId).find('input[data-duplicate="1"], textarea[data-duplicate="1"], select[data-duplicate="1"]');
+	var required	= $('#' + formId).find('input[required], input[data-required="1"], textarea[required], textarea[data-required="1"], select[required], select[data-required="1"]');
+	var dupes		= $('#' + formId).find('input[data-duplicate="1"], input[data-dupe="1"], textarea[data-duplicate="1"], textarea[data-dupe="1"], select[data-duplicate="1"], select[data-dupe="1"]');
 	
-	if( !empty( required ) ) {
+	if( required.length > 0 ) {
 		required.each( function( index, value ) {
 			var id		= $(this).attr('id');
 			var myValue = trim( $(this).val() );
@@ -43,7 +49,7 @@ function formIsValid( formId )
 					var rules = $(this).data('rules');
 					switch( rules ) {
 						case 'alphaNumericAllowDash':
-							if( !isAlphaNumericWithSlash( myValue ) ) {
+							if( !isAlphaNumericWithDash( myValue ) ) {
 								$('#' + id).addClass('inputError');
 								errors.push( id );	
 							}
@@ -60,6 +66,21 @@ function formIsValid( formId )
 						errors.push( dupeId );							
 						$('#' + id).addClass('inputError');
 						$('#' + dupeId).addClass('inputError');
+					} else {
+						$('#' + id).removeClass('inputError');
+						$('#' + dupeId).removeClass('inputError');						
+					}
+				} else if( typeof $(this).data('dupe') !== 'undefined' ) {
+					var dupeId = $(this).data('dupe');
+										
+					if( $(this).val() != $('#' + dupeId).val() ) {					
+						errors.push( id );
+						errors.push( dupeId );							
+						$('#' + id).addClass('inputError');
+						$('#' + dupeId).addClass('inputError');
+					} else {
+						$('#' + id).removeClass('inputError');
+						$('#' + dupeId).removeClass('inputError');						
 					}
 				}
 			}
@@ -124,6 +145,62 @@ function formIsValid( formId )
 		
 		return true;		
 	}	
+}
+
+function getFormErrors( formId )
+{
+	var errors		= new Array();	
+	var required	= $('#' + formId).find('input[required], input[data-required="1"], textarea[required], textarea[data-required="1"], select[required], select[data-required="1"]');
+	
+	if( required.length > 0 ) {
+		required.each( function( index, value ) {
+			var id		= $(this).attr('id');
+			var myValue = trim( $(this).val() );
+			
+			if( !strlen( myValue ) ) {
+				errors.push( id );
+			} else {
+				if( $(this).data('type') == 'email' ) {
+					if( !isValidEmailAddress( myValue ) ) {
+						errors.push( id );							
+					}				
+				}
+				
+				if( typeof $(this).data('rules') !== 'undefined' ) {
+					var rules = $(this).data('rules');
+					switch( rules ) {
+						case 'alphaNumericAllowDash':
+							if( !isAlphaNumericWithDash( myValue ) ) {
+								errors.push( id );	
+							}
+							
+							break;
+					}
+				}				
+				
+				if( typeof $(this).data('duplicate') !== 'undefined' ) {
+					var dupeId = $(this).data('duplicate');
+					if( $(this).val() != $('#' + dupeId).val() ) {					
+						errors.push( id );
+						errors.push( dupeId );							
+					}
+				} else if( typeof $(this).data('dupe') !== 'undefined' ) {
+					var dupeId = $(this).data('dupe');
+					if( $(this).val() != $('#' + dupeId).val() ) {					
+						errors.push( id );
+						errors.push( dupeId );							
+					}
+				}
+			}
+		});		
+	}
+	
+	return errors;
+}
+
+function isAlphaNumericWithDash( string )
+{
+	return string.match(/^[-a-zA-Z0-9]+$/);	
 }
 
 function isValidEmailAddress(emailAddress) 
