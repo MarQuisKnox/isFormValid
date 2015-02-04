@@ -85,47 +85,51 @@ function isFormValid( formId )
 				}
 			}
 			
-			var type = strtolower( $('#' + id).prop('tagName') );
-			switch( type ) {
-				case 'select':
-					$('#' + id).change(function() {
-						var myValue = trim( $(this).val() );
-						if( strlen( myValue ) ) {
-							if( $(this).data('type') != 'email' ) {
-								$('#' + id).removeClass('inputError');						
-							} else {
-								if( isValidEmailAddress( myValue ) ) {
-									$('#' + id).removeClass('inputError');							
+			var type = $('#' + id).prop('tagName');
+			if( type ) {
+				type = type.toLowerCase();
+				
+				switch( type ) {
+					case 'select':
+						$('#' + id).change(function() {
+							var myValue = trim( $(this).val() );
+							if( strlen( myValue ) ) {
+								if( $(this).data('type') != 'email' ) {
+									$('#' + id).removeClass('inputError');						
 								} else {
-									$('#' + id).addClass('inputError');							
-								}
-							}	
-						} else {
-							$('#' + id).addClass('inputError');					
-						}						
-					});
-					
-					break;
-					
-				default:
-					$('#' + id).bind('keyup paste', function() {
-						var myValue = trim( $(this).val() );
-						if( strlen( myValue ) ) {
-							if( $(this).data('type') != 'email' ) {
-								$('#' + id).removeClass('inputError');						
+									if( isValidEmailAddress( myValue ) ) {
+										$('#' + id).removeClass('inputError');							
+									} else {
+										$('#' + id).addClass('inputError');							
+									}
+								}	
 							} else {
-								if( isValidEmailAddress( myValue ) ) {
-									$('#' + id).removeClass('inputError');							
+								$('#' + id).addClass('inputError');					
+							}						
+						});
+						
+						break;
+						
+					default:
+						$('#' + id).bind('keyup paste', function() {
+							var myValue = trim( $(this).val() );
+							if( strlen( myValue ) ) {
+								if( $(this).data('type') != 'email' ) {
+									$('#' + id).removeClass('inputError');						
 								} else {
-									$('#' + id).addClass('inputError');							
-								}
-							}	
-						} else {
-							$('#' + id).addClass('inputError');					
-						}
-					});						
+									if( isValidEmailAddress( myValue ) ) {
+										$('#' + id).removeClass('inputError');							
+									} else {
+										$('#' + id).addClass('inputError');							
+									}
+								}	
+							} else {
+								$('#' + id).addClass('inputError');					
+							}
+						});						
+				}
 			}
-		
+			
 		});		
 	}
 	
