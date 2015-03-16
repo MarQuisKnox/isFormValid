@@ -35,7 +35,7 @@ function isFormValid( formId, addErrorClass, errorClass )
 	
 	var errors		= new Array();	
 	var required	= $('#' + formId).find('input[required], input[data-required="1"], textarea[required], textarea[data-required="1"], select[required], select[data-required="1"]');
-	var dupes		= $('#' + formId).find('input[data-duplicate="1"], input[data-dupe="1"], textarea[data-duplicate="1"], textarea[data-dupe="1"], select[data-duplicate="1"], select[data-dupe="1"]');
+	var dupes		= $('#' + formId).find('input[data-duplicate], input[data-dupe], textarea[data-duplicate], textarea[data-dupe], select[data-duplicate], select[data-dupe]');
 	
 	if( required.length > 0 ) {
 		required.each( function( index, value ) {
