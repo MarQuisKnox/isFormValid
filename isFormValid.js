@@ -7,9 +7,9 @@
  * @link        http://marquisknox.com
  * @license     Affero Public License v3
  *
- * @since	Wednesday, September 30, 2013, 12:55 PM GMT+1
- * @modified    $Date: 2014-05-04 16:36:58 -0700 (Sun, 04 May 2014) $ $Author: opensource@marquisknox.com $
- * @version     $Id: custom.validation.js 40 2014-05-04 23:36:58Z opensource@marquisknox.com $
+ * @since		Wednesday, September 30, 2013, 12:55 PM GMT+1
+ * @modified    $Date: 2015-03-16 15:00:00 +0100 (Mon, 16 March 2015) $ $Author: opensource@marquisknox.com $
+ * @version     $Id: isFormValid.js 41 2015-03-16 14:00:00Z opensource@marquisknox.com $
  *
  * @category    JavaScript
  * @package     isFormValid
@@ -19,10 +19,20 @@
  * Determine if a form is valid
  * 
  * @param	string	formId
+ * @param	boolean	addErrorClass
+ * @param	string	errorClass
  * @return	boolean
 */
-function isFormValid( formId )
+function isFormValid( formId, addErrorClass, errorClass )
 {
+	if( typeof addErrorClass === 'undefined' ) {
+		var addErrorClass = true;
+	}
+	
+	if( typeof errorClass === 'undefined' ) {
+		var errorClass = 'inputError';
+	}
+	
 	var errors		= new Array();	
 	var required	= $('#' + formId).find('input[required], input[data-required="1"], textarea[required], textarea[data-required="1"], select[required], select[data-required="1"]');
 	var dupes		= $('#' + formId).find('input[data-duplicate="1"], input[data-dupe="1"], textarea[data-duplicate="1"], textarea[data-dupe="1"], select[data-duplicate="1"], select[data-dupe="1"]');
@@ -33,15 +43,21 @@ function isFormValid( formId )
 			var myValue = trim( $(this).val() );
 			
 			if( !strlen( myValue ) ) {
-				$('#' + id).addClass('inputError');
+				if( addErrorClass ) {
+					$('#' + id).addClass( errorClass );	
+				}
+				
 				errors.push( id );
 			} else {
 				if( $(this).data('type') == 'email' ) {
 					if( isValidEmailAddress( myValue ) ) {
-						$('#' + id).removeClass('inputError');							
+						$('#' + id).removeClass( errorClass );							
 					} else {
 						errors.push( id );
-						$('#' + id).addClass('inputError');							
+						
+						if( addErrorClass ) {
+							$('#' + id).addClass( errorClass );
+						}
 					}						
 				}
 				
@@ -50,7 +66,10 @@ function isFormValid( formId )
 					switch( rules ) {
 						case 'alphaNumericAllowDash':
 							if( !isAlphaNumericWithDash( myValue ) ) {
-								$('#' + id).addClass('inputError');
+								if( addErrorClass ) {
+									$('#' + id).addClass( errorClass );
+								}
+									
 								errors.push( id );	
 							}
 							
@@ -63,24 +82,30 @@ function isFormValid( formId )
 										
 					if( $(this).val() != $('#' + dupeId).val() ) {					
 						errors.push( id );
-						errors.push( dupeId );							
-						$('#' + id).addClass('inputError');
-						$('#' + dupeId).addClass('inputError');
+						errors.push( dupeId );
+						
+						if( addErrorClass ) {
+							$('#' + id).addClass( errorClass );
+							$('#' + dupeId).addClass( errorClass );
+						}
 					} else {
-						$('#' + id).removeClass('inputError');
-						$('#' + dupeId).removeClass('inputError');						
+						$('#' + id).removeClass( errorClass );
+						$('#' + dupeId).removeClass( errorClass );						
 					}
 				} else if( typeof $(this).data('dupe') !== 'undefined' ) {
 					var dupeId = $(this).data('dupe');
 										
 					if( $(this).val() != $('#' + dupeId).val() ) {					
 						errors.push( id );
-						errors.push( dupeId );							
-						$('#' + id).addClass('inputError');
-						$('#' + dupeId).addClass('inputError');
+						errors.push( dupeId );		
+						
+						if( addErrorClass ) {
+							$('#' + id).addClass( errorClass );
+							$('#' + dupeId).addClass( errorClass );
+						}
 					} else {
-						$('#' + id).removeClass('inputError');
-						$('#' + dupeId).removeClass('inputError');						
+						$('#' + id).removeClass( errorClass );
+						$('#' + dupeId).removeClass( errorClass );						
 					}
 				}
 			}
@@ -95,16 +120,20 @@ function isFormValid( formId )
 							var myValue = trim( $(this).val() );
 							if( strlen( myValue ) ) {
 								if( $(this).data('type') != 'email' ) {
-									$('#' + id).removeClass('inputError');						
+									$('#' + id).removeClass( errorClass );						
 								} else {
 									if( isValidEmailAddress( myValue ) ) {
-										$('#' + id).removeClass('inputError');							
+										$('#' + id).removeClass( errorClass );							
 									} else {
-										$('#' + id).addClass('inputError');							
+										if( addErrorClass ) {
+											$('#' + id).addClass( errorClass );
+										}
 									}
 								}	
 							} else {
-								$('#' + id).addClass('inputError');					
+								if( addErrorClass ) {
+									$('#' + id).addClass( errorClass );	
+								}
 							}						
 						});
 						
@@ -115,16 +144,20 @@ function isFormValid( formId )
 							var myValue = trim( $(this).val() );
 							if( strlen( myValue ) ) {
 								if( $(this).data('type') != 'email' ) {
-									$('#' + id).removeClass('inputError');						
+									$('#' + id).removeClass( errorClass );						
 								} else {
 									if( isValidEmailAddress( myValue ) ) {
-										$('#' + id).removeClass('inputError');							
+										$('#' + id).removeClass( errorClass );							
 									} else {
-										$('#' + id).addClass('inputError');							
+										if( addErrorClass ) {
+											$('#' + id).addClass( errorClass );
+										}
 									}
 								}	
 							} else {
-								$('#' + id).addClass('inputError');					
+								if( addErrorClass ) {
+									$('#' + id).addClass( errorClass );	
+								}
 							}
 						});						
 				}
@@ -137,14 +170,17 @@ function isFormValid( formId )
 	if( errorSize > 0 ) {		
 		$.each(errors, function( index, value ) {
 			var element = $('#' + value);
-			element.addClass('inputError');
+			
+			if( addErrorClass ) {
+				element.addClass( errorClass );
+			}
 		});
 		
 		return false;
 	} else {
 		required.each( function( index, value ) {
 			var id = $(this).attr('id');
-			$('#' + id).removeClass('inputError');
+			$('#' + id).removeClass( errorClass );
 		});
 		
 		return true;		
